@@ -10,3 +10,15 @@ list:
 	AWS_PROFILE=$(AWS_PROFILE) cdk list
 diff:
 	AWS_PROFILE=$(AWS_PROFILE) cdk diff
+deploy:
+	@echo "Deploying CDK... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
+	AWS_PROFILE=$(AWS_PROFILE) cdk deploy
+synth:
+	AWS_PROFILE=$(AWS_PROFILE) cdk synth
+context:
+	AWS_PROFILE=$(AWS_PROFILE) cdk context
+doctor:
+	AWS_PROFILE=$(AWS_PROFILE) cdk doctor
+destroy:
+	@echo "Destroying CDK... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
+	AWS_PROFILE=$(AWS_PROFILE) cdk destroy

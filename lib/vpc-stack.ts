@@ -1,6 +1,6 @@
 import { CfnOutput, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { CustomVpc } from "./constructs/custom-vpc";
+import { CustomVpc } from "./base/vpc-construct";
 
 export class VpcStack extends Stack {
   readonly vpcId: string;
