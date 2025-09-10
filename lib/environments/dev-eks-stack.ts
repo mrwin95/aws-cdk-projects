@@ -40,14 +40,6 @@ export class DevEksStack extends Stack {
       privateSubnetRouteTableIds,
     });
 
-    vpc.publicSubnets.forEach((subnet, index) => {
-      Tags.of(subnet).add("kubernetes.io/role/elb", "1");
-    });
-
-    vpc.privateSubnets.forEach((subnet, index) => {
-      Tags.of(subnet).add("kubernetes.io/role/internal-elb", "1");
-    });
-
     new EksConstruct(this, "DevEks", {
       clusterName: process.env.EKS_CLUSTER_NAME ?? "dev-eks",
       vpc,

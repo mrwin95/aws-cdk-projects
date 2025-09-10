@@ -2,6 +2,7 @@
 import * as cdk from "aws-cdk-lib";
 import { VpcStack } from "../lib/shared-vpc-stack";
 import { DevEksStack } from "../lib/environments/dev-eks-stack";
+import "dotenv/config";
 
 const app = new cdk.App();
 

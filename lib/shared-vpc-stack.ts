@@ -1,4 +1,4 @@
-import { CfnOutput, Stack, StackProps, Tag } from "aws-cdk-lib";
+import { CfnOutput, Stack, StackProps, Tag, Tags } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { CustomVpc } from "./base/vpc-construct";
 
@@ -65,6 +65,14 @@ export class VpcStack extends Stack {
     new CfnOutput(this, "SharedPrivateSubnetCount", {
       value: vpc.privateSubnets.length.toString(),
       exportName: "SharedPrivateSubnetCount",
+    });
+
+    vpc.publicSubnets.forEach((subnet, index) => {
+      Tags.of(subnet).add("kubernetes.io/role/elb", "1");
+    });
+
+    vpc.privateSubnets.forEach((subnet, index) => {
+      Tags.of(subnet).add("kubernetes.io/role/internal-elb", "1");
     });
   }
 }
