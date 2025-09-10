@@ -25,16 +25,30 @@ export class VpcStack extends Stack {
     // this.publicSubnetIds = vpc.publicSubnets.map((s) => s.subnetId);
     // this.privateSubnetIds = vpc.privateSubnets.map((s) => s.subnetId);
     vpc.publicSubnets.forEach((subnet, index) => {
-      new CfnOutput(this, `SharedPublicSubnet${index + 1}`, {
+      new CfnOutput(this, `SharedPublicSubnet${index}`, {
         value: subnet.subnetId,
-        exportName: `SharedPublicSubnet${index + 1}`,
+        exportName: `SharedPublicSubnet${index}`,
       });
     });
 
     vpc.privateSubnets.forEach((subnet, index) => {
-      new CfnOutput(this, `SharedPrivateSubnet${index + 1}`, {
+      new CfnOutput(this, `SharedPrivateSubnet${index}`, {
         value: subnet.subnetId,
-        exportName: `SharedPrivateSubnet${index + 1}`,
+        exportName: `SharedPrivateSubnet${index}`,
+      });
+    });
+
+    vpc.publicSubnets.forEach((subnet, index) => {
+      new CfnOutput(this, `SharedPublicSubnetRouteTable${index}`, {
+        value: subnet.routeTable.routeTableId,
+        exportName: `SharedPublicSubnetRouteTable${index}`,
+      });
+    });
+
+    vpc.privateSubnets.forEach((subnet, index) => {
+      new CfnOutput(this, `SharedPrivateSubnetRouteTable${index}`, {
+        value: subnet.routeTable.routeTableId,
+        exportName: `SharedPrivateSubnetRouteTable${index}`,
       });
     });
 

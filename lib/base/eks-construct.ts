@@ -20,6 +20,7 @@ export class EksConstruct extends Construct {
       version: props.version ?? eks.KubernetesVersion.V1_30,
       defaultCapacity: 2,
       defaultCapacityInstance: new ec2.InstanceType("t3.medium"),
+      //   kubectlLayer: new eks.KubectlLayer(this, "KubectlLayer"),
     });
   }
 }

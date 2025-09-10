@@ -8,22 +8,36 @@ export class DevEksStack extends Stack {
     super(scope, id, props);
 
     const publicSubnetIds = [
-      Fn.importValue("SharedPublicSubnet0"),
-      Fn.importValue("SharedPublicSubnet1"),
-      Fn.importValue("SharedPublicSubnet2"),
+      this.importValue("SharedPublicSubnet0"),
+      this.importValue("SharedPublicSubnet1"),
+      this.importValue("SharedPublicSubnet2"),
     ];
 
     const privateSubnetIds = [
-      Fn.importValue("SharedPrivateSubnet0"),
-      Fn.importValue("SharedPrivateSubnet1"),
-      Fn.importValue("SharedPrivateSubnet2"),
+      this.importValue("SharedPrivateSubnet0"),
+      this.importValue("SharedPrivateSubnet1"),
+      this.importValue("SharedPrivateSubnet2"),
+    ];
+
+    const publicSubnetRouteTableIds = [
+      this.importValue("SharedPublicSubnetRouteTable0"),
+      this.importValue("SharedPublicSubnetRouteTable1"),
+      this.importValue("SharedPublicSubnetRouteTable2"),
+    ];
+
+    const privateSubnetRouteTableIds = [
+      this.importValue("SharedPrivateSubnetRouteTable0"),
+      this.importValue("SharedPrivateSubnetRouteTable1"),
+      this.importValue("SharedPrivateSubnetRouteTable2"),
     ];
 
     const vpc = ec2.Vpc.fromVpcAttributes(this, "ImportedVPC", {
       vpcId: this.importValue("SharedVpcId"),
       availabilityZones: this.availabilityZones,
       publicSubnetIds,
+      publicSubnetRouteTableIds,
       privateSubnetIds,
+      privateSubnetRouteTableIds,
     });
 
     new EksConstruct(this, "DevEks", {
