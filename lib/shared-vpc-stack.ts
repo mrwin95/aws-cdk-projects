@@ -4,39 +4,55 @@ import { CustomVpc } from "./base/vpc-construct";
 
 export class VpcStack extends Stack {
   readonly vpcId: string;
+  readonly publicSubnetIds: string[];
+  readonly privateSubnetIds: string[];
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const customVpc = new CustomVpc(this, "SharedVpc", {
+    const vpc = new CustomVpc(this, "SharedVpc", {
       vpcCidr: "10.30.0.0/16",
       maxAzs: 3,
       natGateways: 1,
       enableEndpoint: true,
       enableFlowLogs: true,
-      azs: this.availabilityZones,
+      //   azs: this.availabilityZones,
       //   azs: this.availabilityZones.slice(0, 2),
+    }).vpc;
+
+    this.vpcId = vpc.vpcId;
+
+    // this.publicSubnetIds = vpc.publicSubnets.map((s) => s.subnetId);
+    // this.privateSubnetIds = vpc.privateSubnets.map((s) => s.subnetId);
+    vpc.publicSubnets.forEach((subnet, index) => {
+      new CfnOutput(this, `SharedPublicSubnet${index + 1}`, {
+        value: subnet.subnetId,
+        exportName: `SharedPublicSubnet${index + 1}`,
+      });
     });
 
-    this.vpcId = customVpc.vpc.vpcId;
+    vpc.privateSubnets.forEach((subnet, index) => {
+      new CfnOutput(this, `SharedPrivateSubnet${index + 1}`, {
+        value: subnet.subnetId,
+        exportName: `SharedPrivateSubnet${index + 1}`,
+      });
+    });
+
+    // this.privateSubnetIds = vpc.privateSubnets.map((s) => s.subnetId);
 
     new CfnOutput(this, "SharedVpcId", {
-      value: customVpc.vpc.vpcId,
+      value: this.vpcId,
       exportName: "SharedVpcId",
     });
 
-    new CfnOutput(this, "SharedPublicSubnetIds", {
-      value: customVpc.vpc.publicSubnets
-        .map((subnet) => subnet.subnetId)
-        .join(","),
-      exportName: "SharedPublicSubnetIds",
+    new CfnOutput(this, "SharedPublicSubnetCount", {
+      value: vpc.publicSubnets.length.toString(),
+      exportName: "SharedPublicSubnetCount",
     });
 
-    new CfnOutput(this, "SharedPrivateSubnetIds", {
-      value: customVpc.vpc.privateSubnets
-        .map((subnet) => subnet.subnetId)
-        .join(","),
-      exportName: "SharedPrivateSubnetIds",
+    new CfnOutput(this, "SharedPrivateSubnetCount", {
+      value: vpc.privateSubnets.length.toString(),
+      exportName: "SharedPrivateSubnetCount",
     });
   }
 

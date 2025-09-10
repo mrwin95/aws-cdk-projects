@@ -3,9 +3,9 @@ import { Stack } from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { Construct } from "constructs";
 
-export interface CustomVpcProps {
+export interface VpcConstructProps {
   vpcCidr?: string;
-  azs: string[];
+//   azs: string[];
   maxAzs?: number;
   natGateways?: number;
   enableEndpoint?: boolean;
@@ -17,7 +17,7 @@ export class CustomVpc extends Construct {
   readonly publicSubnets: ec2.Subnet[];
   readonly privateSubnets: ec2.Subnet[];
 
-  constructor(scope: Construct, id: string, props: CustomVpcProps) {
+  constructor(scope: Construct, id: string, props: VpcConstructProps) {
     super(scope, id);
 
     // const stack = Stack.of(this);

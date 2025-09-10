@@ -13,6 +13,9 @@ diff:
 deploy:
 	@echo "Deploying CDK... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
 	AWS_PROFILE=$(AWS_PROFILE) cdk deploy
+deploy-dev:
+	@echo "Deploying CDK to dev... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
+	AWS_PROFILE=$(AWS_PROFILE) cdk deploy DevEksStack --require-approval never
 synth:
 	AWS_PROFILE=$(AWS_PROFILE) cdk synth
 context:
@@ -22,3 +25,9 @@ doctor:
 destroy:
 	@echo "Destroying CDK... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
 	AWS_PROFILE=$(AWS_PROFILE) cdk destroy
+destroy-dev:
+	@echo "Destroying CDK in dev... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
+	AWS_PROFILE=$(AWS_PROFILE) cdk destroy DevEksStack
+destroy-vpc:
+	@echo "Destroying CDK VPC... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
+	AWS_PROFILE=$(AWS_PROFILE) cdk destroy VpcStack
