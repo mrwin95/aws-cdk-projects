@@ -3,7 +3,7 @@ import * as eks from "aws-cdk-lib/aws-eks";
 import { Construct } from "constructs";
 
 export interface EksConstructProps {
-  vpc: ec2.Vpc;
+  vpc: ec2.IVpc;
   clusterName: string;
   version?: eks.KubernetesVersion;
 }

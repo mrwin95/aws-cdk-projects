@@ -13,7 +13,7 @@ export interface CustomVpcProps {
 }
 
 export class CustomVpc extends Construct {
-  readonly vpc: ec2.Vpc;
+  readonly vpc: ec2.IVpc;
   readonly publicSubnets: ec2.Subnet[];
   readonly privateSubnets: ec2.Subnet[];
 
