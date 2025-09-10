@@ -13,6 +13,12 @@ diff:
 deploy:
 	@echo "Deploying CDK... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
 	AWS_PROFILE=$(AWS_PROFILE) cdk deploy --all --require-approval never
+deploy-vpc:
+	@echo "Deploying CDK VPC... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
+	AWS_PROFILE=$(AWS_PROFILE) cdk deploy VpcStack --require-approval never
+deploy-admin-role:
+	@echo "Deploying CDK IAM Role... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
+	AWS_PROFILE=$(AWS_PROFILE) cdk deploy IamAdminRoleStack --require-approval never
 deploy-dev:
 	@echo "Deploying CDK to dev... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
 	AWS_PROFILE=$(AWS_PROFILE) cdk deploy DevEksStack --require-approval never
