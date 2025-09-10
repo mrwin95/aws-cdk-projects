@@ -5,7 +5,7 @@ import { Construct } from "constructs";
 
 export interface VpcConstructProps {
   vpcCidr?: string;
-//   azs: string[];
+  //   azs: string[];
   maxAzs?: number;
   natGateways?: number;
   enableEndpoint?: boolean;
@@ -20,19 +20,10 @@ export class CustomVpc extends Construct {
   constructor(scope: Construct, id: string, props: VpcConstructProps) {
     super(scope, id);
 
-    // const stack = Stack.of(this);
-    // const vpcCidr = props.vpcCidr ?? "10.20.0.0/16";
-    // const azs = props.azs.slice(0, 2); // Limit to 2 AZs for simplicity
-
-    // // vpc no default subnets
-
-    // const vpc = new ec2.Vpc(this, "VPC", {
-    //   ipAddresses: ec2.IpAddresses.cidr(vpcCidr),
-    //   subnetConfiguration: [],
-    // });
-
     this.vpc = new ec2.Vpc(this, "Vpc", {
-      ipAddresses: ec2.IpAddresses.cidr(props.vpcCidr ?? "10.20.0.0/16"),
+      ipAddresses: ec2.IpAddresses.cidr(
+        props.vpcCidr ?? process.env.VPC_CIDR ?? "10.20.0.0/16"
+      ),
       maxAzs: props.maxAzs ?? 2,
       natGateways: props.natGateways ?? 1,
       subnetConfiguration: [

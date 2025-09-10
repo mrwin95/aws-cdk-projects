@@ -1,4 +1,4 @@
-import { CfnOutput, Stack, StackProps } from "aws-cdk-lib";
+import { CfnOutput, Stack, StackProps, Tag } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { CustomVpc } from "./base/vpc-construct";
 
@@ -11,13 +11,13 @@ export class VpcStack extends Stack {
     super(scope, id, props);
 
     const vpc = new CustomVpc(this, "SharedVpc", {
-      vpcCidr: "10.30.0.0/16",
-      maxAzs: 3,
-      natGateways: 1,
-      enableEndpoint: true,
-      enableFlowLogs: true,
-      //   azs: this.availabilityZones,
-      //   azs: this.availabilityZones.slice(0, 2),
+      vpcCidr: process.env.VPC_CIDR ?? "10.30.0.0/16",
+      maxAzs: process.env.VPC_MAX_AZS ? parseInt(process.env.VPC_MAX_AZS) : 2,
+      natGateways: process.env.VPC_NAT_GATEWAY
+        ? parseInt(process.env.VPC_NAT_GATEWAY)
+        : 1,
+      enableEndpoint: process.env.ENABLE_VPC_ENDPOINT === "true",
+      enableFlowLogs: process.env.ENABLE_VPC_FLOW_LOGS === "true",
     }).vpc;
 
     this.vpcId = vpc.vpcId;
@@ -52,8 +52,6 @@ export class VpcStack extends Stack {
       });
     });
 
-    // this.privateSubnetIds = vpc.privateSubnets.map((s) => s.subnetId);
-
     new CfnOutput(this, "SharedVpcId", {
       value: this.vpcId,
       exportName: "SharedVpcId",
@@ -68,9 +66,5 @@ export class VpcStack extends Stack {
       value: vpc.privateSubnets.length.toString(),
       exportName: "SharedPrivateSubnetCount",
     });
-  }
-
-  private importValue(name: string): string {
-    return Stack.of(this).resolve({ "Fn::ImportValue": name }) as string;
   }
 }

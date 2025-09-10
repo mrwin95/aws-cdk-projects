@@ -2,7 +2,7 @@ import { Stack, StackProps, Fn } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { EksConstruct } from "../base/eks-construct";
-
+import { Tags } from "aws-cdk-lib";
 export class DevEksStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -40,8 +40,16 @@ export class DevEksStack extends Stack {
       privateSubnetRouteTableIds,
     });
 
+    vpc.publicSubnets.forEach((subnet, index) => {
+      Tags.of(subnet).add("kubernetes.io/role/elb", "1");
+    });
+
+    vpc.privateSubnets.forEach((subnet, index) => {
+      Tags.of(subnet).add("kubernetes.io/role/internal-elb", "1");
+    });
+
     new EksConstruct(this, "DevEks", {
-      clusterName: "dev-eks",
+      clusterName: process.env.EKS_CLUSTER_NAME ?? "dev-eks",
       vpc,
     }).cluster;
   }

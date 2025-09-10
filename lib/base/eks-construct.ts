@@ -5,6 +5,7 @@ import { KubectlV32Layer } from "@aws-cdk/lambda-layer-kubectl-v32";
 import { KubectlV33Layer } from "@aws-cdk/lambda-layer-kubectl-v33";
 
 import { Construct } from "constructs";
+import { parserEksVersion } from "../helpers/helper.common";
 
 export interface EksConstructProps {
   vpc: ec2.IVpc;
@@ -18,14 +19,16 @@ export class EksConstruct extends Construct {
   constructor(scope: Construct, id: string, props: EksConstructProps) {
     super(scope, id);
 
-    const version = props.version ?? eks.KubernetesVersion.V1_31;
+    const version = props.version ?? parserEksVersion(process.env.EKS_VERSION);
 
     this.cluster = new eks.Cluster(this, "EKSCluster", {
       vpc: props.vpc,
       clusterName: props.clusterName,
-      version: props.version ?? eks.KubernetesVersion.V1_30,
+      version: version,
       defaultCapacity: 2,
-      defaultCapacityInstance: new ec2.InstanceType("t3.medium"),
+      defaultCapacityInstance: new ec2.InstanceType(
+        process.env.EKS_NODE_TYPE ?? "t3.medium"
+      ),
       kubectlLayer: this.resolveKubectlLayer(version),
     });
   }
