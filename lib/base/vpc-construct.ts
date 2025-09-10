@@ -31,8 +31,8 @@ export class CustomVpc extends Construct {
     //   subnetConfiguration: [],
     // });
 
-    this.vpc = new ec2.Vpc(this, "CustomVPC", {
-      ipAddresses: ec2.IpAddresses.cidr(props.vpcCidr ?? "10.30.0.0/16"),
+    this.vpc = new ec2.Vpc(this, "Vpc", {
+      ipAddresses: ec2.IpAddresses.cidr(props.vpcCidr ?? "10.20.0.0/16"),
       maxAzs: props.maxAzs ?? 2,
       natGateways: props.natGateways ?? 1,
       subnetConfiguration: [

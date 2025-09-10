@@ -8,7 +8,7 @@ export class VpcStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const customVpc = new CustomVpc(this, "CustomVpc", {
+    const customVpc = new CustomVpc(this, "SharedVpc", {
       vpcCidr: "10.30.0.0/16",
       maxAzs: 3,
       natGateways: 1,
@@ -20,21 +20,27 @@ export class VpcStack extends Stack {
 
     this.vpcId = customVpc.vpc.vpcId;
 
-    new CfnOutput(this, "VpcId", {
+    new CfnOutput(this, "SharedVpcId", {
       value: customVpc.vpc.vpcId,
       exportName: "SharedVpcId",
     });
 
-    new CfnOutput(this, "PublicSubnetIds", {
+    new CfnOutput(this, "SharedPublicSubnetIds", {
       value: customVpc.vpc.publicSubnets
         .map((subnet) => subnet.subnetId)
         .join(","),
+      exportName: "SharedPublicSubnetIds",
     });
 
-    new CfnOutput(this, "PrivateSubnetIds", {
+    new CfnOutput(this, "SharedPrivateSubnetIds", {
       value: customVpc.vpc.privateSubnets
         .map((subnet) => subnet.subnetId)
         .join(","),
+      exportName: "SharedPrivateSubnetIds",
     });
+  }
+
+  private importValue(name: string): string {
+    return Stack.of(this).resolve({ "Fn::ImportValue": name }) as string;
   }
 }
