@@ -9,10 +9,10 @@ bootstrap:
 list:
 	AWS_PROFILE=$(AWS_PROFILE) cdk list
 diff:
-	AWS_PROFILE=$(AWS_PROFILE) cdk diff
+	AWS_PROFILE=$(AWS_PROFILE) cdk diff --all
 deploy:
 	@echo "Deploying CDK... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
-	AWS_PROFILE=$(AWS_PROFILE) cdk deploy
+	AWS_PROFILE=$(AWS_PROFILE) cdk deploy --all --require-approval never
 deploy-dev:
 	@echo "Deploying CDK to dev... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
 	AWS_PROFILE=$(AWS_PROFILE) cdk deploy DevEksStack --require-approval never
@@ -24,7 +24,7 @@ doctor:
 	AWS_PROFILE=$(AWS_PROFILE) cdk doctor
 destroy:
 	@echo "Destroying CDK... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
-	AWS_PROFILE=$(AWS_PROFILE) cdk destroy
+	AWS_PROFILE=$(AWS_PROFILE) cdk destroy --all
 destroy-dev:
 	@echo "Destroying CDK in dev... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
 	AWS_PROFILE=$(AWS_PROFILE) cdk destroy DevEksStack
