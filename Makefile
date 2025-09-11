@@ -22,6 +22,9 @@ deploy-admin-role:
 deploy-dev:
 	@echo "Deploying CDK to dev... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
 	AWS_PROFILE=$(AWS_PROFILE) cdk deploy DevEksStack --require-approval never
+deploy-ecr:
+	@echo "Deploying CDK ECR... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
+	AWS_PROFILE=$(AWS_PROFILE) cdk deploy EcrStack --require-approval never
 synth:
 	AWS_PROFILE=$(AWS_PROFILE) cdk synth
 context:

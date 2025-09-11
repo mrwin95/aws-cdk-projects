@@ -5,6 +5,7 @@ import { DevEksStack } from "../lib/environments/dev-eks-stack";
 import { IamAdminRoleStack } from "../lib/stacks/iam-admin-role-stack";
 import "dotenv/config";
 import { EksAdminUserStack } from "../lib/stacks/eks-admin-user-stack";
+import { EcrStack } from "../lib/stacks/ecr-stack";
 
 const app = new cdk.App();
 
@@ -35,6 +36,14 @@ const devEksAdminUserStack = new EksAdminUserStack(app, "EksAdminUserStack", {
   },
 });
 
+const ecrStack = new EcrStack(app, "EcrStack", {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  },
+});
+
 devEksStack.addDependency(vpcStack);
 devEksStack.addDependency(devIamRoleStack);
 devEksStack.addDependency(devEksAdminUserStack);
+devEksStack.addDependency(ecrStack);
