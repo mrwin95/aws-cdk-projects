@@ -9,39 +9,18 @@ export class DevEksStack extends Stack {
 
     const azs = this.availabilityZones;
     const pubIds = azs.map((_, i) => this.importValue(`SharedPublicSubnet${i}`));
-    const publicSubnetIds = [
-      this.importValue("SharedPublicSubnet0"),
-      this.importValue("SharedPublicSubnet1"),
-      this.importValue("SharedPublicSubnet2"),
-    ];
 
     const priIds = azs.map((_, i) =>
       this.importValue(`SharedPrivateSubnet${i}`)
     );
-    const privateSubnetIds = [
-      this.importValue("SharedPrivateSubnet0"),
-      this.importValue("SharedPrivateSubnet1"),
-      this.importValue("SharedPrivateSubnet2"),
-    ];
 
     const pubRts = azs.map((_, i) =>
       this.importValue(`SharedPublicSubnetRouteTable${i}`)
     );
 
-    const publicSubnetRouteTableIds = [
-      this.importValue("SharedPublicSubnetRouteTable0"),
-      this.importValue("SharedPublicSubnetRouteTable1"),
-      this.importValue("SharedPublicSubnetRouteTable2"),
-    ];
-
     const priRts = azs.map((_, i) =>
       this.importValue(`SharedPrivateSubnetRouteTable${i}`)
     );
-    const privateSubnetRouteTableIds = [
-      this.importValue("SharedPrivateSubnetRouteTable0"),
-      this.importValue("SharedPrivateSubnetRouteTable1"),
-      this.importValue("SharedPrivateSubnetRouteTable2"),
-    ];
 
     const vpc = ec2.Vpc.fromVpcAttributes(this, "ImportedVPC", {
       vpcId: this.importValue("SharedVpcId"),
@@ -57,6 +36,15 @@ export class DevEksStack extends Stack {
       vpc,
     }).cluster;
 
+    //
+    // const eksAdminUserArn = this.importValue("EksAdminUserArn");
+    const eksAdminUser = iam.User.fromUserAttributes(
+      this,
+      "ImportedEksAdminUser",
+      {
+        userArn: Fn.importValue("EksAdminUserArn"),
+      }
+    );
     // import iam role from IamAdminRoleStack
     const eksAdminRole = iam.Role.fromRoleName(
       this,
@@ -64,6 +52,9 @@ export class DevEksStack extends Stack {
       process.env.IAM_ADMIN_ROLE_NAME ?? "DevEksAdminRole"
     );
 
+    cluster.awsAuth.addUserMapping(eksAdminUser, {
+      groups: ["system:masters"],
+    });
     // map iam role to system:masters in aws-auth configmap
     cluster.awsAuth.addMastersRole(eksAdminRole);
   }
