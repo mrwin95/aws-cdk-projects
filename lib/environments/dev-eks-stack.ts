@@ -3,6 +3,7 @@ import { Construct } from "constructs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { EksConstruct } from "../base/eks-construct";
 import * as iam from "aws-cdk-lib/aws-iam";
+import { NginxIngressConstruct } from "../addons/nginx-ingress-construct";
 export class DevEksStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -58,6 +59,14 @@ export class DevEksStack extends Stack {
     });
     // map iam role to system:masters in aws-auth configmap
     cluster.awsAuth.addMastersRole(eksAdminRole);
+
+    // add nginx ingress addon
+
+    new NginxIngressConstruct(this, "NginxIngress", {
+      cluster: cluster,
+      internetFacing: true,
+      //   sslCertificateArn: process.env.SSL_CERT_ARN,
+    });
   }
 
   private importValue(exportName: string): string {
