@@ -53,6 +53,7 @@ export class DevEksStack extends Stack {
     );
 
     cluster.awsAuth.addUserMapping(eksAdminUser, {
+      username: eksAdminUser.userName,
       groups: ["system:masters"],
     });
     // map iam role to system:masters in aws-auth configmap

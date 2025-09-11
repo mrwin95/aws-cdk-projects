@@ -13,10 +13,16 @@ export class EksAdminUserStack extends Stack {
       userName: process.env.EKS_ADMIN_USER_NAME ?? "eks-admin-user",
     });
 
+    const policies = process.env.EKS_ADMIN_USER_POLICIES?.split(",") ?? [];
     // grant eksAdminUser to assume eksAdminRole
     eksAdminUser.addToPolicy(
       new iam.PolicyStatement({
-        actions: ["sts:DescribeCluster", "sts:AssumeRole"],
+        actions: [
+          "eks:DescribeCluster",
+          "eks:ListClusters",
+          "eks:AccessKubernetesApi",
+          "sts:AssumeRole",
+        ],
         resources: ["*"],
       })
     );
