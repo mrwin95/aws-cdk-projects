@@ -21,6 +21,8 @@ export class EksConstruct extends Construct {
 
     const version = props.version ?? parserEksVersion(process.env.EKS_VERSION);
 
+    console.log(`EKS Version: ${version.version}`);
+
     this.cluster = new eks.Cluster(this, "EKSCluster", {
       vpc: props.vpc,
       clusterName: props.clusterName,
@@ -42,7 +44,7 @@ export class EksConstruct extends Construct {
       case "1.33":
         return new KubectlV33Layer(this, "KubectlV33Layer");
       default:
-        return new KubectlV31Layer(this, "KubectlV31Layer");
+        return new KubectlV32Layer(this, "KubectlV32Layer");
     }
   }
 }
