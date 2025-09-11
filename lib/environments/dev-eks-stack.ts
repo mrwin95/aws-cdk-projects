@@ -38,7 +38,6 @@ export class DevEksStack extends Stack {
     }).cluster;
 
     //
-    // const eksAdminUserArn = this.importValue("EksAdminUserArn");
     const eksAdminUser = iam.User.fromUserAttributes(
       this,
       "ImportedEksAdminUser",
