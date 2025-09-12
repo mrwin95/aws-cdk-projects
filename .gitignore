@@ -8,3 +8,4 @@ node_modules
 cdk.out
 .env
 demo-apps/node_modules
+demo-apps/demo-frontend/node_modules
