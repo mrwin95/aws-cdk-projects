@@ -28,6 +28,7 @@ export class NginxIngressConstruct extends Construct {
         ? "internet-facing"
         : "internal",
       "service.beta.kubernetes.io/aws-load-balancer-type": "alb",
+      type: "application",
     };
 
     // add TLS if provided

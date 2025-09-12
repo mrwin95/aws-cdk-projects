@@ -1,13 +1,9 @@
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as eks from "aws-cdk-lib/aws-eks";
 import * as iam from "aws-cdk-lib/aws-iam";
-import { KubectlV31Layer } from "@aws-cdk/lambda-layer-kubectl-v31";
-import { KubectlV32Layer } from "@aws-cdk/lambda-layer-kubectl-v32";
-import { KubectlV33Layer } from "@aws-cdk/lambda-layer-kubectl-v33";
 
 import { Construct } from "constructs";
-import { parserEksVersion } from "../helpers/helper.common";
-import { Role } from "aws-cdk-lib/aws-iam";
+import { parserEksVersion, resolveKubectlLayer } from "../helpers/helper.common";
 
 export interface EksConstructProps {
   vpc: ec2.IVpc;
@@ -33,7 +29,7 @@ export class EksConstruct extends Construct {
       defaultCapacityInstance: new ec2.InstanceType(
         process.env.EKS_NODE_TYPE ?? "t3.medium"
       ),
-      kubectlLayer: this.resolveKubectlLayer(version),
+      kubectlLayer: resolveKubectlLayer(this, version),
     });
 
     // Node group 1
@@ -78,18 +74,15 @@ export class EksConstruct extends Construct {
         Role: "Frontend",
       },
     });
-  }
 
-  private resolveKubectlLayer(version: eks.KubernetesVersion) {
-    switch (version.version) {
-      case "1.31":
-        return new KubectlV31Layer(this, "KubectlV31Layer");
-      case "1.32":
-        return new KubectlV32Layer(this, "KubectlV32Layer");
-      case "1.33":
-        return new KubectlV33Layer(this, "KubectlV33Layer");
-      default:
-        return new KubectlV32Layer(this, "KubectlV32Layer");
-    }
+    frontendNodes.role.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName(
+        "AmazonEC2ContainerRegistryReadOnly"
+        //     "ecr:GetAuthorizationToken",
+        //   "ecr:BatchCheckLayerAvailability",
+        //   "ecr:GetDownloadUrlForLayer",
+        //   "ecr:BatchGetImage",
+      )
+    );
   }
 }

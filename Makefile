@@ -28,6 +28,13 @@ deploy-dev:
 deploy-ecr:
 	@echo "Deploying CDK ECR... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
 	AWS_PROFILE=$(AWS_PROFILE) cdk deploy EcrStack --require-approval never
+deploy-alb:
+	@echo "Deploying CDK ECR... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
+	AWS_PROFILE=$(AWS_PROFILE) cdk deploy AlbIngressStack --require-approval never
+destroy-alb:
+	@echo "Deploying CDK ECR... Using profile $(AWS_PROFILE) in account $(AWS_ACCOUNT) and region $(AWS_REGION)"
+	AWS_PROFILE=$(AWS_PROFILE) cdk destroy AlbIngressStack --require-approval never
+	
 synth:
 	AWS_PROFILE=$(AWS_PROFILE) cdk synth
 context:

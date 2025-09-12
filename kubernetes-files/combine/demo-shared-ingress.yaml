@@ -1,15 +1,15 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: demo-backend-ingress
+  name: demo-shared-ingress
   namespace: default
   annotations:
-    kubernetes.io/ingress.class: alb
+    # kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/group.name: demo-apps
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-    alb.ingress.kubernetes.io/load-balancer-name: demo-dev-alb
+    alb.ingress.kubernetes.io/load-balancer-name: demo-shared-alb
 spec:
   ingressClassName: alb
   rules:
@@ -22,4 +22,14 @@ spec:
               service:
                 name: demo-backend-service
                 port:
-                  number: 3000
+                  number: 80
+    - host: property.zodiai.co
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: demo-frontend-service
+                port:
+                  number: 80

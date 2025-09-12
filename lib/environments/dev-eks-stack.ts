@@ -1,4 +1,4 @@
-import { Stack, StackProps, Fn } from "aws-cdk-lib";
+import { Stack, StackProps, Fn, CfnOutput } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { EksConstruct } from "../base/eks-construct";
@@ -61,10 +61,25 @@ export class DevEksStack extends Stack {
 
     // add nginx ingress addon
 
-    new NginxIngressConstruct(this, "NginxIngress", {
-      cluster: cluster,
-      internetFacing: true,
-      //   sslCertificateArn: process.env.SSL_CERT_ARN,
+    // new NginxIngressConstruct(this, "NginxIngress", {
+    //   cluster: cluster,
+    //   internetFacing: true,
+    //   //   sslCertificateArn: process.env.SSL_CERT_ARN,
+    // });
+
+    new CfnOutput(this, "EksKubectlRoleArn", {
+      value: cluster.kubectlRole?.roleArn ?? "",
+      exportName: "EksKubectlRoleArn",
+    });
+
+    new CfnOutput(this, "EksOidcProviderArn", {
+      value: cluster.openIdConnectProvider.openIdConnectProviderArn,
+      exportName: "EksOidcProviderArn",
+    });
+
+    new CfnOutput(this, "EksClusterSecurityGroupId", {
+      value: cluster.kubectlSecurityGroup?.securityGroupId ?? "",
+      exportName: "EksClusterSecurityGroupId",
     });
   }
 
