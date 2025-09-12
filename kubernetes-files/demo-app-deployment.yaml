@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-backend
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo-backend
+  template:
+    metadata:
+      labels:
+        app: demo-backend
+    spec:
+      nodeSelector:
+        role: backend
+      containers:
+        - name: demo-backend
+          image: 442042528400.dkr.ecr.ap-south-1.amazonaws.com/demo-node-ts-backend-eks:latest
+          ports:
+            - containerPort: 3000

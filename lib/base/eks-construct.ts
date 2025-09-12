@@ -1,5 +1,6 @@
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as eks from "aws-cdk-lib/aws-eks";
+import * as iam from "aws-cdk-lib/aws-iam";
 import { KubectlV31Layer } from "@aws-cdk/lambda-layer-kubectl-v31";
 import { KubectlV32Layer } from "@aws-cdk/lambda-layer-kubectl-v32";
 import { KubectlV33Layer } from "@aws-cdk/lambda-layer-kubectl-v33";
@@ -37,7 +38,7 @@ export class EksConstruct extends Construct {
 
     // Node group 1
 
-    this.cluster.addNodegroupCapacity("WorkerNode1", {
+    const backendNodes = this.cluster.addNodegroupCapacity("WorkerNode1", {
       nodegroupName: process.env.EKS_NODEGROUP1_NAME ?? "eks-nodegroup-1",
       desiredSize: parseInt(process.env.EKS_NODEGROUP1_DESIRED_SIZE ?? "1"),
       minSize: parseInt(process.env.EKS_NODEGROUP1_MIN_SIZE ?? "1"),
@@ -51,9 +52,20 @@ export class EksConstruct extends Construct {
       },
     });
 
+    // add ecr role
+
+    backendNodes.role.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName(
+        "AmazonEC2ContainerRegistryReadOnly"
+        //     "ecr:GetAuthorizationToken",
+        //   "ecr:BatchCheckLayerAvailability",
+        //   "ecr:GetDownloadUrlForLayer",
+        //   "ecr:BatchGetImage",
+      )
+    );
     // Node group 1
 
-    this.cluster.addNodegroupCapacity("WorkerNode2", {
+    const frontendNodes = this.cluster.addNodegroupCapacity("WorkerNode2", {
       nodegroupName: process.env.EKS_NODEGROUP2_NAME ?? "eks-nodegroup-2",
       desiredSize: parseInt(process.env.EKS_NODEGROUP2_DESIRED_SIZE ?? "1"),
       minSize: parseInt(process.env.EKS_NODEGROUP2_MIN_SIZE ?? "1"),
